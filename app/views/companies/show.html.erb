@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Ticker:</strong>
+  <%= @company.ticker %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @company.name %>
+</p>
+
+<p>
+  <strong>Industry:</strong>
+  <%= @company.industry %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @company.active %>
+</p>
+
+<p>
+  <strong>Ignore:</strong>
+  <%= @company.ignore %>
+</p>
+
+<p>
+  <strong>Roar:</strong>
+  <%= @company.roar %>
+</p>
+
+<p>
+  <strong>Id:</strong>
+  <%= @company._id %>
+</p>
+
+<%= link_to 'Edit', edit_company_path(@company) %> |
+<%= link_to 'Back', companies_path %>

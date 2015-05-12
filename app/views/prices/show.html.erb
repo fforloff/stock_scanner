@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Date:</strong>
+  <%= @price.date %>
+</p>
+
+<p>
+  <strong>Open:</strong>
+  <%= @price.open %>
+</p>
+
+<p>
+  <strong>High:</strong>
+  <%= @price.high %>
+</p>
+
+<p>
+  <strong>Low:</strong>
+  <%= @price.low %>
+</p>
+
+<p>
+  <strong>Close:</strong>
+  <%= @price.close %>
+</p>
+
+<p>
+  <strong>Volume:</strong>
+  <%= @price.volume %>
+</p>
+
+<%= link_to 'Edit', edit_price_path(@price) %> |
+<%= link_to 'Back', prices_path %>
