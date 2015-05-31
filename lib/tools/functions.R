@@ -5,8 +5,10 @@ getSymbolsJSON <-
   n = length(tickers)
   i = 1
   while(i <= n) {
-    print(tickers[i])
-    try (json_data <- fromJSON(url(paste(url,"/",tickers[i],"/prices.json", sep=""))), silent=T)
+#    print(tickers[i])
+#    print(paste(url,"/",tickers[i],"/prices.json", sep=""))
+    try (json_data <- fromJSON(readLines(paste(url,"/",tickers[i],"/prices.json", sep=""))), silent=T)
+#    print(json_data)
     sym <- do.call("rbind", lapply(json_data, data.frame))
     sym <- sym[c("date","open","high","low","close","volume")]
     if(!is.null(sym)) {

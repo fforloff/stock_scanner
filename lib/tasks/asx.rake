@@ -21,5 +21,13 @@ namespace :exchange do
       end
       desc "update prices and generate images"
       task :daily => [:update_companies, :update_prices]
+      desc "plot graphs"
+      task :plot_graphs => :environment do
+          $SITE_URL = APP_CONFIG[:site_url]
+          $IMAGES_DIR = APP_CONFIG[:images_dir]
+          $MMA_MONTHS = APP_CONFIG[:mma_months]
+          require 'plot_graphs'
+          plot_graphs($SITE_URL,$IMAGES_DIR,$MMA_MONTHS)
+      end
   end
 end

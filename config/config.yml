@@ -4,3 +4,6 @@ development:
   :filter_price: 0.2
   :max_days: 800
   :exchange_name: 'ASX'
+  :site_url: 'http://localhost:3000/companies'
+  :images_dir: 'app/assets/images'
+  :mma_months: 12
