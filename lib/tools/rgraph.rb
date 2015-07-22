@@ -5,34 +5,45 @@ class Rgraphs
         @myr = RinRuby.new(echo = false)
         @myr.echo(enable=false, stderr=false)
         #@myr.eval "library('quantmod')"
-        @myr.eval "library('rjson')"
         @myr.eval "suppressPackageStartupMessages(library('quantmod', quietly=TRUE, verbose=FALSE))"
         @myr.eval "source('#{File.expand_path('lib/tools/functions.R')}')"
+        @myr.eval "library('jsonlite')"
+        @myr.eval "library('curl')"
+#        @myr.eval "library('XML')"
+        @myr.eval "library('rmongodb')"
+        
     end
     def get_json(env,url,companies)
-        @companies = companies
         @c_vector = companies.map {|c| "'#{c}'"}.join(',')
-        #@c_vector = "'AAC.AX','AAD.AX'" 
         @myr.eval "#{env} <- new.env()"
         @myr.eval "getSymbolsJSON(c(#{@c_vector}), url='#{url}',  env=#{env})"
+    end
+    def get_csv(env,url,companies)
+        @companies = companies
+        @c_vector = companies.map {|c| "'#{c}'"}.join(',')
+        @myr.eval "#{env} <- new.env()"
+        @myr.eval "getSymbolsCSV(c(#{@c_vector}), url='#{url}',  env=#{env})"
+    end
+    def get_xml(env,url,companies)
+        @companies = companies
+        @c_vector = companies.map {|c| "'#{c}'"}.join(',')
+        @myr.eval "#{env} <- new.env()"
+        @myr.eval "getSymbolsXML(c(#{@c_vector}), url='#{url}',  env=#{env})"
     end
     def draw_mma_roar(env,path)
         @result_hash = Hash.new
         @myr.eval <<EOF
         tickers <- character()
         roars <- numeric()
+        left <- 0
         for (t in ls(#{env})) {
-            if(length(Cl(#{env}[[t]]))<400){
+            weekly <- to.weekly(#{env}[[t]])
+            if(NROW(weekly)<50){
                 do.call("rm", list(t), envir=#{env})
                 next
             }
-            weekly <- to.weekly(#{env}[[t]])
+
             roar <- ROAR(Cl(weekly))
-            #try(roar <- ROAR(Cl(weekly)),silent=T)
-            #if(!exists("roar")) {
-            #    do.call("rm", list(t), envir=#{env})
-            #    next
-            #}
             png(paste('#{path}','/',t,'_mma.png', sep=''), width=400, height=300)
             chartSeries(last(weekly, "24 months"),
                 type = c("line"),
@@ -46,15 +57,44 @@ class Rgraphs
             tickers <- c(tickers, t)
             roars <- c(roars, last(roar))
         }
+        left <- length(tickers)
 EOF
-        @tickers = @myr.pull("tickers", singleton=true)
-        @tickers = [@tickers] if @tickers.is_a?(String)
-        @roars = @myr.pull("roars", singleton=true)
-        @tickers.each_with_index do |t, i|
+        @left = 0
+        @left = @myr.pull("left")
+        puts "left is #{@left}"
+        if (@left > 0) then 
+          @tickers = @myr.pull("tickers", singleton=true)
+          @tickers = [@tickers] if @tickers.is_a?(String)
+          @roars = @myr.pull("roars", singleton=true)
+          @tickers.each_with_index do |t, i|
             @result_hash.merge!(t => @roars[i]) unless @roars[i].nan?
+          end
         end
         @result_hash
     end
+    def draw_charts_par(companies,url,path)
+      @myr.eval "library('doParallel')"
+      @myr.eval "library('foreach')"
+      @myr.eval "registerDoParallel(cores=2)"
+      @result_hash = Hash.new
+      @c_vector = companies.map {|c| "'#{c}'"}.join(',')
+      @myr.eval <<EOF
+      res <- foreach (cc=c(#{@c_vector}), .combine=rbind, .packages=c('quantmod','jsonlite','curl','xts','zoo'), .errorhandling='remove') %dopar% {
+        drawChartsParallel(cc, url = '#{url}', path='#{path}')
+        }
+      res <- na.omit(res) 
+      tickers <- as.vector(res[,1])
+      roars <- as.vector(res[,2])
+EOF
+      @tickers = @myr.pull("tickers", singleton=true)
+      @tickers = [@tickers] if @tickers.is_a?(String)
+      @roars = @myr.pull("roars", singleton=true)
+      @tickers.each_with_index do |t, i|
+          @result_hash.merge!(t => @roars[i]) unless @roars[i].nan?
+      end
+      @result_hash
+    end
+
     def draw_range_volume(env,path)
         @myr.eval <<EOF
         for (t in ls(#{env})) {

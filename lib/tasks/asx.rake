@@ -27,7 +27,18 @@ namespace :exchange do
           $IMAGES_DIR = APP_CONFIG[:images_dir]
           $MMA_MONTHS = APP_CONFIG[:mma_months]
           require 'plot_graphs'
-          plot_graphs($SITE_URL,$IMAGES_DIR,$MMA_MONTHS)
+          puts "plotting"
+          $BATCH_SIZE=15
+          #until $BATCH_SIZE > 70 do
+          #  puts "batch size: #{$BATCH_SIZE}"
+          #  time = Benchmark.measure {
+              plot_graphs($SITE_URL,$IMAGES_DIR,$MMA_MONTHS,$BATCH_SIZE)
+          #  }
+          #File.open('/tmp/stats', 'a') do |f|
+          #  f.puts "#{$BATCH_SIZE},#{time.real.to_i}"
+          #end
+          #$BATCH_SIZE +=5
+          #end
       end
   end
 end

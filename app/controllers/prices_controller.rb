@@ -3,12 +3,22 @@ class PricesController < ApplicationController
 
   # GET /companies/[:company_id]/prices - not active
   # GET /companies/[:company_id]/prices.json
+  # GET /companies/[:company_id]/prices.csv
+  # GET /companies/[:company_id]/prices.xml
   def index
-    @prices = Price.where(company_id: params[:company_id])
+    #@prices = Price.where(company_id: params[:company_id])
+    #@prices = Price.all_in(company_id: params[:company_id])
+    @c_ids = params[:company_id]
+    @c_ids = [@c_ids] if @c_ids.is_a?(String)
+    @prices = Price.where(company_id: {'$in': @c_ids})
     respond_to do |format|  
-      format.json { render json: @prices, 
-        only: [:date, :open, :high, :low, :close, :volume] }
+      #format.json { render json: @prices, 
+      #  only: [:company_id, :date, :open, :high, :low, :close, :volume] }
+      #format.json { render json: @prices }
+#      format.csv { render text: @prices.to_to_csv }
+#      format.xml { render xml: @prices, only: [:date, :open, :high, :low, :close, :volume] }
 #      format.html 
+      format.json 
     end  
   end
 

@@ -9,4 +9,13 @@ class Price
 
   index({date: 1, company_id: 1})
   belongs_to :company
+  def self.to_to_csv(options = {})
+    CSV.generate(options) do |csv|
+      columns = Price.fields.keys
+      csv << columns
+      all.each do |price|
+        csv << price.attributes.values_at(*columns)
+      end
+    end
+  end
 end

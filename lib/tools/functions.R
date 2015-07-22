@@ -5,21 +5,115 @@ getSymbolsJSON <-
   n = length(tickers)
   i = 1
   while(i <= n) {
-#    print(tickers[i])
-#    print(paste(url,"/",tickers[i],"/prices.json", sep=""))
-    try (json_data <- fromJSON(readLines(paste(url,"/",tickers[i],"/prices.json", sep=""))), silent=T)
-#    print(json_data)
-    sym <- do.call("rbind", lapply(json_data, data.frame))
-    sym <- sym[c("date","open","high","low","close","volume")]
-    if(!is.null(sym)) {
+    try (sym <- fromJSON(paste(url,"/",tickers[i],"/prices.json", sep="")), silent=T)
+#    try (json_data <- fromJSON(readLines(paste(url,"/",tickers[i],"/prices.json", sep=""))), silent=T)
+#    sym <- do.call("rbind", lapply(json_data, data.frame))
+    if(length(sym) != 0) {
+      sym <- sym[c("date","open","high","low","close","volume")]
       sym$open = sym$open/1000 
       sym$close = sym$close/1000 
       sym$low = sym$low/1000 
       sym$high = sym$high/1000 
+      if(NROW(sym) > 130) {
       assign(tickers[i], as.xts(sym[,-1],as.Date(as.POSIXct(sym$date,format="%Y-%m-%d", tz="UTC"))), envir=env)
+      }
     }
     i = i+1
   }
+}
+
+getMultiSymbolsJSON <-
+  function(tickers, url = "http://localhost:3000/prices?", env=.GlobalEnv) {
+  tickers_params <- paste("company_id[]=", tickers, "&", sep="", collapse="")
+  list <- fromJSON(paste(url, tickers_params, "format=json", sep="" ), flatten = TRUE)
+  for(i in 1:length(list)){
+    tmp_dataframe <- do.call("rbind", lapply(list[i,2], data.frame))
+    assign(list[i,1], as.xts(tmp_dataframe[,-1],as.Date(as.POSIXct(tmp_dataframe$date,format="%Y-%m-%d"))), envir=env)
+  } 
+}
+
+getOneSymbolJSON <-
+  function(ticker, url = "http://localhost:3000/companies", env=.GlobalEnv) {
+  try (sym <- fromJSON(paste(url,"/",ticker,"/prices.json", sep="")), silent=T)
+  if(length(sym) != 0) {
+    sym <- sym[c("date","open","high","low","close","volume")]
+    sym$open = sym$open/1000
+    sym$close = sym$close/1000
+    sym$low = sym$low/1000
+    sym$high = sym$high/1000
+    xts <- as.xts(sym[,-1],as.Date(as.POSIXct(sym$date,format="%Y-%m-%d", tz="UTC")))
+  }
+  return(xts)
+}
+
+
+getSymbolsCSV <-
+  function(tickers, url = "http://localhost:3000/companies", env=.GlobalEnv) {
+  fmt <- "%Y-%m-%d %H:%M:%S UTC"
+  n = length(tickers)
+  i = 1
+  while(i <= n) {
+#    print(tickers[i])
+    try ( sym <- read.csv(url(paste(url,"/",tickers[i],"/prices.csv", sep=""))), silent=T)
+    if(length(sym) != 0) {
+    #if(!is.null(sym)) {
+      sym <- subset(sym, select = -c(X_id, company_id))
+      #sym <- subset(sym, select = -c(X_type, X_id, company_id))
+      sym$open = sym$open/1000
+      sym$close = sym$close/1000
+      sym$low = sym$low/1000
+      sym$high = sym$high/1000
+      assign(tickers[i], as.xts(sym[,-1],as.Date(as.POSIXct(sym$date,format=fmt))), envir=env)
+    }
+    i = i+1
+  }
+}
+
+getSymbolsXML <-
+  function(tickers, url = "http://localhost:3000/companies", env=.GlobalEnv) {
+  fmt <- "%Y-%m-%d"
+  n = length(tickers)
+  i = 1
+  while(i <= n) {
+#    print(tickers[i])
+    #try ( data <- xmlParse(url(paste(url,"/",tickers[i],"/prices.xml", sep=""))), silent=T)
+    data <- xmlParse(paste(url,"/",tickers[i],"/prices.xml", sep=""))
+    if(length(data) != 0) {
+      sym <- xmlToDataFrame(data, 
+        c("numeric","character","numeric","numeric","numeric","numeric"),
+        stringsAsFactors=FALSE)
+      #sym <- xmlToDataFrame(data, 
+      #  stringsAsFactors=FALSE)
+      sym <- sym[c("date","open","high","low","close","volume")]
+      sym$open = sym$open/1000
+      sym$close = sym$close/1000
+      sym$low = sym$low/1000
+      sym$high = sym$high/1000
+      if(NROW(sym) > 130) {
+        assign(tickers[i], 
+          as.xts(sym[,-1],as.Date(as.POSIXct(sym$date,format=fmt, tz='UTC'))), envir=env)
+      }
+    }
+    i = i+1
+  }
+}
+
+getOneSymbolRmongodb <- function (host='localhost',database,collection,ticker) {
+  m <- mongo.create(db=database)
+  coll <- paste(database, ".", collection, sep="")
+  query <- paste('{"company_id": "', ticker, '"}', sep="")
+   prices <- mongo.find.all(m, coll, query)
+   if(length(prices) != 0) {
+    sym <- do.call("rbind", lapply(prices, data.frame))
+    sym <- sym[c("date","open","high","low","close","volume")]
+    sym$open = sym$open/1000
+    sym$close = sym$close/1000
+    sym$low = sym$low/1000
+    sym$high = sym$high/1000
+    fmt <- "%Y-%m-%d %H:%M:%S UTC"
+    xts <- as.xts(sym[,-1],as.Date(as.POSIXct(sym$date,format=fmt)))
+  }
+  return(xts)
 }
 
 # Hull Moving Average
@@ -91,4 +185,39 @@ Range <- function (x, n_hma=8, n_atr_lower=4, n_atr_upper=8, up_steps=2, down_st
   names(upper) <- "TP"
   range <- merge(upper,lower,sl)
   #range <- merge(lower,central,upper)
+}
+
+drawChartsParallel <- function(ticker, url = "http://localhost:3000/companies", path, min_weeks = 26,  env=.GlobalEnv) {
+  roar = NA
+  try(xts <- getOneSymbolJSON(ticker, url, env), silent=T)
+  if(length(xts) != 0) {
+    weekly <- to.weekly(xts)  
+      if(NROW(weekly) > min_weeks) {
+      roar <- ROAR(Cl(weekly))
+      img_path <- paste(path,'/',ticker,'_mma.png', sep='')
+      png(filename=paste(path,'/',ticker,'_mma.png', sep=''), width=400, height=300)
+      #print(img_path)
+      try(chartSeries(last(weekly, "24 months"),
+        type = c("line"),
+        name = "",
+        subset = "last 12 months",
+        theme = chartTheme("white", up.col = "green"), TA = NULL),silent=TRUE)
+      plot(addGMMA(weekly))
+      roar = ROAR(Cl(weekly))
+      plot(addTA(roar, col = 'brown'))
+      dev.off()
+      png(filename=paste(path,'/',ticker,'_range.png', sep=''), width=400, height=300)
+      chartSeries(last(weekly, "24 months"),
+        type = c("candlesticks"),
+        name = "",
+        subset = "last 12 months",
+        theme = chartTheme("white", up.col = "green", dn.col = "red"), TA = 'addVo()')
+      print(paste(path,'/',ticker,'_range', sep=''))
+      rr <- Range(weekly)
+      plot(addTA(rr, on=1, col=c('blue','brown','black')))
+      dev.off()
+    }
+  }
+  #return <- c(ticker,as.vector(last(roar)))
+  return <- data.frame(tickers = ticker, roars = as.vector(last(roar)))
 }
