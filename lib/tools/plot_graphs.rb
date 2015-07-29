@@ -7,7 +7,6 @@ def plot_graphs(url,images_dir,mma_months,per_batch)
     company_count = Company.count
     env = 'data'
     bar = ProgressBar.new(company_count)
-    #per_batch = 5
     roars_hash = Hash.new
     myr = Rgraphs.new
     updates = Array.new
@@ -21,7 +20,8 @@ def plot_graphs(url,images_dir,mma_months,per_batch)
         end
 #    }
 #    bmark.report("draw_charts") {
-        roars_hash = myr.draw_charts_par(cc_array,url,"#{images_dir}")
+        chunk = 40
+        roars_hash = myr.draw_charts_par(cc_array,url,"#{images_dir}",chunk)
 #    }
 
 #    bmark.report("json") {

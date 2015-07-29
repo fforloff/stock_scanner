@@ -1,4 +1,18 @@
 # functions
+
+splitVector <- function(x, chunk) {
+  i <- 1
+  n <- 1
+  res <- list()
+  while (length(x) >= n) {
+  tmp <- x[n:(n+chunk-1)]
+  res[[i]] <- tmp[!is.na(tmp)]
+  n <- n+chunk
+  i <- i+1
+  }
+  return(res)
+}
+
 # get price data for a list of tickers over a json call.
 getSymbolsJSON <-
   function(tickers, url = "http://localhost:3000/companies", env=.GlobalEnv) {
@@ -23,13 +37,21 @@ getSymbolsJSON <-
 }
 
 getMultiSymbolsJSON <-
-  function(tickers, url = "http://localhost:3000/prices?", env=.GlobalEnv) {
-  tickers_params <- paste("company_id[]=", tickers, "&", sep="", collapse="")
+  function(x, url = "http://localhost:3000/prices?", env=.GlobalEnv) {
+  tickers_params <- paste("company_id[]=", x, "&", sep="", collapse="")
   list <- fromJSON(paste(url, tickers_params, "format=json", sep="" ), flatten = TRUE)
   for(i in 1:length(list)){
-    tmp_dataframe <- do.call("rbind", lapply(list[i,2], data.frame))
-    assign(list[i,1], as.xts(tmp_dataframe[,-1],as.Date(as.POSIXct(tmp_dataframe$date,format="%Y-%m-%d"))), envir=env)
-  } 
+    if(length(list[i,2]) != 0) {
+      sym <- do.call("rbind", lapply(list[i,2], data.frame))
+      sym$open = sym$open/1000
+      sym$close = sym$close/1000
+      sym$low = sym$low/1000
+      sym$high = sym$high/1000
+      if(NROW(sym) > 130) {
+        assign(list[i,1], as.xts(sym[,-1],as.Date(as.POSIXct(sym$date,format="%Y-%m-%d"))), envir=env)
+      }
+    }
+  }
 }
 
 getOneSymbolJSON <-
@@ -221,3 +243,49 @@ drawChartsParallel <- function(ticker, url = "http://localhost:3000/companies", 
   #return <- c(ticker,as.vector(last(roar)))
   return <- data.frame(tickers = ticker, roars = as.vector(last(roar)))
 }
+
+drawChartsParallelMulti <- function(tickers, path, url="http://localhost:3000/prices?", min_weeks = 26,  env=.GlobalEnv) {
+  tmpEnv <- new.env()
+  tt <- character()
+  roars <- numeric()
+#  print(path)
+#  print(tickers)
+  getMultiSymbolsJSON(tickers, url, env=tmpEnv)
+  for (t in ls(tmpEnv)) {
+#    print(NROW(tmpEnv[[t]]))
+    roar = NA
+    if(NROW(tmpEnv[[t]]) != 0) {
+      weekly <- to.weekly(tmpEnv[[t]])
+      if(NROW(weekly) > min_weeks) {
+        roar <- ROAR(Cl(weekly))
+        png(filename=paste(path,'/',t,'_mma.png', sep=''), width=400, height=300)
+        try(chartSeries(last(weekly, "24 months"),
+                        type = c("line"),
+                        name = "",
+                        subset = "last 12 months",
+                        theme = chartTheme("white", up.col = "green"), TA = NULL),silent=TRUE)
+        plot(addGMMA(weekly))
+        roar = ROAR(Cl(weekly))
+        plot(addTA(roar, col = 'brown'))
+        dev.off()
+        png(filename=paste(path,'/',t,'_range.png', sep=''), width=400, height=300)
+        chartSeries(last(weekly, "24 months"),
+                    type = c("candlesticks"),
+                    name = "",
+                    subset = "last 12 months",
+                    theme = chartTheme("white", up.col = "green", dn.col = "red"), TA = 'addVo()')
+
+        rr <- Range(weekly)
+        plot(addTA(rr, on=1, col=c('blue','brown','black')))
+        dev.off()
+        tt <- c(tt, t)
+        roars <- c(roars, last(roar))
+      }
+    }
+  }
+  #return <- c(ticker,as.vector(last(roar)))
+  print(tt)
+  print(roars)
+  return <- data.frame(tickers = tt, roars = roars)
+}
+

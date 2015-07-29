@@ -2,17 +2,24 @@
 #  #json.extract! price, :date, :open, :high, :low, :close, :volume
 #end
 
+h = {} 
+
+@prices.each do |p|
+  h[p.company_id] = [] unless h.has_key?(p.company_id)
+  h[p.company_id] = h[p.company_id].push(p)
+end
+
 json.array! @c_ids do |t|
   json.ticker t
-  json.prices @prices do |p|
-    if p.company_id == t then
-      json.extract! p, :date, :open, :high, :low, :close, :volume
-#      json.date p.date
-#      json.open p.open
-#      json.high p.high
-#      json.low p.low
-#      json.close p.close
-#      json.volume p.volume
-    end
+  json.prices h[t] do |p|
+    json.extract! p, :date, :open, :high, :low, :close, :volume
   end
 end
+#json.array! @c_ids do |t|
+#  json.ticker t
+#  json.prices @prices do |p|
+#    if p.company_id == t then
+#      json.extract! p, :date, :open, :high, :low, :close, :volume
+#    end
+#  end
+#end

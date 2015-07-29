@@ -72,15 +72,17 @@ EOF
         end
         @result_hash
     end
-    def draw_charts_par(companies,url,path)
+    def draw_charts_par(companies,url,path,chunk)
       @myr.eval "library('doParallel')"
       @myr.eval "library('foreach')"
       @myr.eval "registerDoParallel(cores=2)"
       @result_hash = Hash.new
       @c_vector = companies.map {|c| "'#{c}'"}.join(',')
       @myr.eval <<EOF
-      res <- foreach (cc=c(#{@c_vector}), .combine=rbind, .packages=c('quantmod','jsonlite','curl','xts','zoo'), .errorhandling='remove') %dopar% {
-        drawChartsParallel(cc, url = '#{url}', path='#{path}')
+      chunked <- splitVector(c(#{@c_vector}), chunk=#{chunk})
+      res <- foreach (cc=chunked, .combine=rbind, .packages=c('quantmod','jsonlite','curl','xts','zoo'), .errorhandling='remove') %dopar% {
+      #res <- foreach (cc=c(#{@c_vector}), .combine=rbind, .packages=c('quantmod','jsonlite','curl','xts','zoo'), .errorhandling='remove') %dopar% {
+        drawChartsParallelMulti(cc,  path='#{path}', url = '#{url}')
         }
       res <- na.omit(res) 
       tickers <- as.vector(res[,1])
