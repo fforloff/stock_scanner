@@ -81,7 +81,6 @@ EOF
       @myr.eval <<EOF
       chunked <- splitVector(c(#{@c_vector}), chunk=#{chunk})
       res <- foreach (cc=chunked, .combine=rbind, .packages=c('quantmod','jsonlite','curl','xts','zoo'), .errorhandling='remove') %dopar% {
-      #res <- foreach (cc=c(#{@c_vector}), .combine=rbind, .packages=c('quantmod','jsonlite','curl','xts','zoo'), .errorhandling='remove') %dopar% {
         drawChartsParallelMulti(cc,  path='#{path}', url = '#{url}')
         }
       res <- na.omit(res) 

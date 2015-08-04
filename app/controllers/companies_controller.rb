@@ -61,6 +61,14 @@ class CompaniesController < ApplicationController
     end
   end
 
+  def autocomplete
+    @query = params[:query].upcase.strip
+    @company_search = Company.where(ticker: /#{@query}/i)
+    respond_to do |format|
+      format.json { render json: @company_search, :only => [:ticker, :_id] }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_company

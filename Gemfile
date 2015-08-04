@@ -50,3 +50,7 @@ gem 'progress_bar'
 gem 'rinruby'
 gem 'thin'
 #gem 'celluloid-pmap'
+
+gem "select2-rails"
+gem 'simple_form'
+

@@ -10,6 +10,11 @@ class ExchangesController < ApplicationController
   # GET /exchanges/1
   # GET /exchanges/1.json
   def show
+    @exchange = Exchange.find_by(name: params[:id])
+    @per_industry = Hash.new {|h,k| h[k] = Array.new }
+    @exchange.companies.where(:roar.gt => 40).desc(:roar).each do |c|
+      @per_industry[c.industry].push(c)
+    end
   end
 
   # GET /exchanges/new
@@ -64,7 +69,8 @@ class ExchangesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_exchange
-      @exchange = Exchange.find(params[:id])
+      #@exchange = Exchange.find(params[:id])
+      @exchange = Exchange.find_by(name: params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

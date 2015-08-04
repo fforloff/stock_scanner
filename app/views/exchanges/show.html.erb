@@ -1,19 +1,20 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Name:</strong>
+<h2>
   <%= @exchange.name %>
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <%= @exchange.description %>
-</p>
-
-<p>
-  <strong>Suffix:</strong>
-  <%= @exchange.suffix %>
-</p>
-
-<%= link_to 'Edit', edit_exchange_path(@exchange) %> |
-<%= link_to 'Back', exchanges_path %>
+</h2>
+          <p>&nbsp;</p>
+  <% @per_industry.keys.each do |industry| %>
+    <h3><%= industry %></h3>
+      <table class="table-fixed" width="820">
+        <% @per_industry[industry].each do |company| %>
+          <% if image_exists?("#{company.ticker}_mma.png") %>
+            <tr>
+              <th><%= company.ticker %></th>
+              <th><%= company.name %></th>
+            </tr>
+            <tr>
+              <td colspan=2><%=image_tag("#{company.ticker}_mma.png")%><%=image_tag("#{company.ticker}_range.png")%></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </table>
+  <% end %>

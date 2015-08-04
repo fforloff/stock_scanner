@@ -29,10 +29,11 @@ namespace :exchange do
           require 'plot_graphs'
           puts "plotting"
           $BATCH_SIZE=100
+          $CHUNK=40
           #until $BATCH_SIZE > 70 do
           #  puts "batch size: #{$BATCH_SIZE}"
           #  time = Benchmark.measure {
-              plot_graphs("http://localhost:3000/prices?",$IMAGES_DIR,$MMA_MONTHS,$BATCH_SIZE)
+              plot_graphs("http://localhost:3000/prices?",$IMAGES_DIR,$MMA_MONTHS,$BATCH_SIZE,$CHUNK)
               #plot_graphs($SITE_URL,$IMAGES_DIR,$MMA_MONTHS,$BATCH_SIZE)
           #  }
           #File.open('/tmp/stats', 'a') do |f|

@@ -39,16 +39,16 @@ getSymbolsJSON <-
 getMultiSymbolsJSON <-
   function(x, url = "http://localhost:3000/prices?", env=.GlobalEnv) {
   tickers_params <- paste("company_id[]=", x, "&", sep="", collapse="")
-  list <- fromJSON(paste(url, tickers_params, "format=json", sep="" ), flatten = TRUE)
-  for(i in 1:length(list)){
-    if(length(list[i,2]) != 0) {
-      sym <- do.call("rbind", lapply(list[i,2], data.frame))
+  dframe <- fromJSON(paste(url, tickers_params, "format=json", sep="" ), flatten = TRUE)
+  for(i in 1:length(dframe)){
+    if(length(dframe$prices[i]) != 0) {
+      sym <- do.call("rbind", lapply(dframe$prices[i], data.frame))
       sym$open = sym$open/1000
       sym$close = sym$close/1000
       sym$low = sym$low/1000
       sym$high = sym$high/1000
       if(NROW(sym) > 130) {
-        assign(list[i,1], as.xts(sym[,-1],as.Date(as.POSIXct(sym$date,format="%Y-%m-%d"))), envir=env)
+        assign(dframe$ticker[i], as.xts(sym[,-1],as.Date(as.POSIXct(sym$date,format="%Y-%m-%d"))), envir=env)
       }
     }
   }
