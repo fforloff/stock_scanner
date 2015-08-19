@@ -1,12 +1,20 @@
 GIT
   remote: https://github.com/mongoid/mongoid.git
-  revision: a9f9464cfd1ee805d727f7b728a6e9fc64eeb700
+  revision: 63ece9973709a837a1817824d202b367db3e3688
   specs:
-    mongoid (4.0.2)
+    mongoid (5.0.0.beta)
       activemodel (~> 4.0)
-      moped (~> 2.0.0)
+      mongo (= 2.1.0.beta)
       origin (~> 2.1)
       tzinfo (>= 0.3.37)
+
+GIT
+  remote: https://github.com/prawnpdf/prawn.git
+  revision: 17230053624f5d2daa53704ac614b0ecdf9cf5b9
+  specs:
+    prawn (2.0.3)
+      pdf-core (~> 0.6.0)
+      ttfunk (~> 1.4.0)
 
 GEM
   remote: https://rubygems.org/
@@ -46,65 +54,77 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    arel (6.0.0)
+    arel (6.0.3)
+    autoprefixer-rails (5.2.1.2)
+      execjs
+      json
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bson (2.3.0)
+    bootstrap-sass (3.3.5.1)
+      autoprefixer-rails (>= 5.0.0.1)
+      sass (>= 3.3.0)
+    bson (3.2.1)
     bson_ext (1.5.1)
     builder (3.2.2)
-    byebug (4.0.3)
-      columnize (= 0.9.0)
+    byebug (6.0.0)
     coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
-    coffee-script (2.3.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.9.1)
-    columnize (0.9.0)
-    connection_pool (2.1.3)
-    daemons (1.2.2)
+    coffee-script-source (1.9.1.1)
+    daemons (1.2.3)
     debug_inspector (0.0.2)
     erubis (2.7.0)
-    ethon (0.7.3)
+    ethon (0.7.4)
       ffi (>= 1.3.0)
-    eventmachine (1.0.7)
-    execjs (2.4.0)
-    ffi (1.9.8)
-    globalid (0.3.3)
+    eventmachine (1.0.8)
+    execjs (2.6.0)
+    ffi (1.9.10)
+    font-awesome-rails (4.4.0.0)
+      railties (>= 3.2, < 5.0)
+    globalid (0.3.6)
       activesupport (>= 4.1.0)
+    gon (6.0.1)
+      actionpack (>= 3.0)
+      json
+      multi_json
+      request_store (>= 1.0)
     highline (1.6.21)
-    hike (1.2.3)
     i18n (0.7.0)
-    jbuilder (2.2.12)
+    jbuilder (2.3.1)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
-    jquery-rails (4.0.3)
+    jquery-rails (4.0.4)
       rails-dom-testing (~> 1.0)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    json (1.8.2)
-    loofah (2.0.1)
+    json (1.8.3)
+    loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mime-types (2.4.3)
+    mime-types (2.6.1)
     mini_portile (0.6.2)
-    minitest (5.5.1)
-    moped (2.0.4)
-      bson (~> 2.2)
-      connection_pool (~> 2.0)
-      optionable (~> 0.2.0)
-    multi_json (1.11.0)
+    minitest (5.8.0)
+    mongo (2.1.0.beta)
+      bson (~> 3.0)
+    multi_json (1.11.2)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
-    optionable (0.2.0)
     options (2.3.2)
     origin (2.1.1)
+    pdf-core (0.6.0)
+    prawn-table (0.2.2)
+      prawn (>= 1.3.0, < 3.0.0)
+    prawn_rails (0.0.11)
+      prawn (>= 0.11.1)
+      railties (>= 3.0.0)
     progress_bar (1.0.3)
       highline (~> 1.6.1)
       options (~> 2.3.0)
-    rack (1.6.0)
+    rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.1)
@@ -120,7 +140,7 @@ GEM
       sprockets-rails
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
-    rails-dom-testing (1.0.6)
+    rails-dom-testing (1.0.7)
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6.0)
       rails-deprecated_sanitizer (>= 1.0.1)
@@ -133,9 +153,11 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     rdoc (4.2.0)
+      json (~> 1.4)
+    request_store (1.2.0)
     rinruby (2.0.3)
-    sass (3.4.13)
-    sass-rails (5.0.1)
+    sass (3.4.16)
+    sass-rails (5.0.3)
       railties (>= 4.0.0, < 5.0)
       sass (~> 3.1)
       sprockets (>= 2.8, < 4.0)
@@ -149,13 +171,10 @@ GEM
     simple_form (3.1.0)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
-    spring (1.3.3)
-    sprockets (2.12.3)
-      hike (~> 1.2)
-      multi_json (~> 1.0)
+    spring (1.3.6)
+    sprockets (3.3.1)
       rack (~> 1.0)
-      tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.2.4)
+    sprockets-rails (2.3.2)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
@@ -166,16 +185,17 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)
+    ttfunk (1.4.0)
     turbolinks (2.5.3)
       coffee-rails
-    typhoeus (0.7.1)
-      ethon (>= 0.7.1)
+    typhoeus (0.7.3)
+      ethon (>= 0.7.4)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    web-console (2.1.2)
+    web-console (2.2.1)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
@@ -185,12 +205,18 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bootstrap-sass (~> 3.3.5)
   bson_ext
   byebug
   coffee-rails (~> 4.1.0)
+  font-awesome-rails
+  gon
   jbuilder (~> 2.0)
   jquery-rails
   mongoid!
+  prawn!
+  prawn-table
+  prawn_rails
   progress_bar
   rails (= 4.2.1)
   rinruby
@@ -204,3 +230,6 @@ DEPENDENCIES
   typhoeus
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
+
+BUNDLED WITH
+   1.10.6

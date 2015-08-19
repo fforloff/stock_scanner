@@ -1,21 +1,11 @@
-<%= form_for(@list) do |f| %>
-  <% if @list.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@list.errors.count, "error") %> prohibited this list from being saved:</h2>
-
-      <ul>
-      <% @list.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+<p>
+<%= simple_form_for @list , url: "/lists/#{@list.name}", html: {:role => 'form' } do |f| %>
+    <div class="form-group">
+  <%= f.input :name, :input_html => { :class => "form-control" } %>
     </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+    <div class="form-group">
+<%= f.label "tickers", :input_html => { :class => "form-control" } %><br><%= f.hidden_field :company_ids, id: "companies-ajax", style: "width:650px" %>
+    </div>
+<p>
+<%= f.button :submit %>
 <% end %>

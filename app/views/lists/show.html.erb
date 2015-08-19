@@ -1,14 +1,26 @@
-<table class="table-fixed" width="820">
-<% @companies.each do |company| %>
-<% if image_exists?("#{company.ticker}_mma.png") %>
-  <tr>
-    <th><%= company.ticker %></th>
-    <th><%= company.name %></th>
-    <th><%= company.industry %></th>
-  </tr>
-  <tr>
-      <td colspan=3><%=image_tag("#{company.ticker}_mma.png") %><%=image_tag("#{company.ticker}_range.png") %></td>
-  </tr>
-<% end %>
-<% end %>
-</table>
+<div class="row" >
+  <div class="col-md-3 col-heading">
+    <%= page_title(@list.name) %>
+   </div>
+<div class="col-md-9">
+</div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <p>&nbsp;</p>
+    <table class="table-fixed" width="820">
+    <% @companies.each do |company| %>
+      <% if image_exists?("#{company.ticker}_mma.png") %>
+        <tr>
+          <th><%= company.ticker %></th>
+          <th><%= company.name %></th>
+          <th><%= company.industry %></th>
+        </tr>
+        <tr>
+            <td colspan=3><%=image_tag("#{company.ticker}_mma.png") %><%=image_tag("#{company.ticker}_range.png") %></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </table>
+  </div>
+</div>

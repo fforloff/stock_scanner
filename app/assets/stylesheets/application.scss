@@ -10,7 +10,36 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require select2
- *= require_tree .
- *= require_self
  */
+
+@import 'custom/variables.scss';
+@import 'select2';
+@import 'select2-bootstrap';
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "font-awesome";
+
+body {
+    padding-top: 60px;
+    background: #B6C0D2 !important;
+//    margin: 0 auto;
+//    max-width: 940px;
+    }
+@media screen and (max-width: 768px) {
+        body { padding-top: 0px; }
+}
+.container {
+    max-width: 850px;
+}
+.col-md-10 > div
+{
+     background-color:#ffffff;
+     border: 1px solid #1c263c;
+      border-radius:3px;
+}
+.col-heading {
+     background-color:#313c53;
+     border: 1px solid #1c263c;
+     border-radius:3px;
+}
+

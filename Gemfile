@@ -53,4 +53,15 @@ gem 'thin'
 
 gem "select2-rails"
 gem 'simple_form'
+gem 'gon'
 
+#gem "libv8", git: "git://github.com/cowboyd/libv8.git", submodules: true
+#gem "therubyracer"
+#gem "less-rails-bootstrap"
+gem 'bootstrap-sass', '~> 3.3.5'
+gem "font-awesome-rails"
+
+gem 'prawn', :git => "https://github.com/prawnpdf/prawn.git"
+gem 'prawn-table'
+gem "prawn_rails"
+#gem "prawn-rails"

@@ -31,3 +31,4 @@ $(document).ready ->
             text: company.ticker
           }
         ) }
+  $("#companies-ajax").select2 "data", gon.list_companies

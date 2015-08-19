@@ -9,9 +9,15 @@ class ListsController < ApplicationController
 
   # GET /lists/1
   # GET /lists/1.json
+  # GET /lists/1.pdf
   def show
     @list = List.find_by(name: params[:id])
     @companies = @list.companies.desc(:roar)
+    respond_to do |format|
+      format.html 
+      format.json 
+      format.pdf
+    end
   end
 
   # GET /lists/new
@@ -21,20 +27,21 @@ class ListsController < ApplicationController
 
   # GET /lists/1/edit
   def edit
+    @list = List.find_by(name: params[:id])
+    gon.list_companies = Company.unscoped.find(@list.company_ids).map {|c| {id: c._id, text: c.ticker } }
   end
 
   # POST /lists
-  # POST /lists.json
   def create
-    @list = List.new(list_params)
+    @list = List.new(name: params[:list][:name])
+    companies_array = params[:list][:company_ids].split(",")
+    @list.company_ids = companies_array if companies_array.size > 0
 
     respond_to do |format|
       if @list.save
-        format.html { redirect_to @list, notice: 'List was successfully created.' }
-        format.json { render :show, status: :created, location: @list }
+        format.html { redirect_to list_path(@list.name), notice: 'List was successfully created.' }
       else
         format.html { render :new }
-        format.json { render json: @list.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -42,12 +49,14 @@ class ListsController < ApplicationController
   # PATCH/PUT /lists/1
   # PATCH/PUT /lists/1.json
   def update
+    @list = List.find_by(name: params[:id])
+    company_ids = params[:list][:company_ids].split(",")
     respond_to do |format|
-      if @list.update(list_params)
-        format.html { redirect_to @list, notice: 'List was successfully updated.' }
-        format.json { render :show, status: :ok, location: @list }
+      if @list.update_attributes(name: params[:list][:name], company_ids: company_ids)
+        format.html { redirect_to list_path(@list.name), notice: 'List was successfully updated.' }
+        format.json { head :no_content }
       else
-        format.html { render :edit }
+        format.html { render action: "edit" }
         format.json { render json: @list.errors, status: :unprocessable_entity }
       end
     end

@@ -1,14 +1,60 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Sscanner</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-
-<%= yield %>
-
-</body>
+  <head>
+    <title>SScanner3</title>
+    <%= include_gon %>
+    <%= stylesheet_link_tag    "application", :media => "all" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+          <div class="container">
+            <div class="navbar-outer">
+              <div class="navbar navbar-default navbar-fixed-top">
+                <div class="navbar-inner">
+                   <div class="container"> <a href="http://localhost:3000/"
+                      class="navbar-brand">Dancing<b>Candle</b>Sticks</a>
+                    <ul class="nav navbar-nav navbar-right">
+                      <li><%= link_to root_path do%>
+                        <i class="fa fa-home"></i> Home
+                      <% end %>
+                      </li>
+                      <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe"></i> Markets <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                          <% @exchanges.each do |ee| %>
+                          <li><%= link_to exchange_path(ee.name) do%>
+                              <i class="fa fa-th-large"></i> <%= ee.name %>
+                            <% end %>
+                          </li>
+                          <% end %>
+                          <li class="divider"></li>
+                          <li><%= link_to 'New Market', new_exchange_path %></li>
+                        </ul>
+                      </li>
+                      <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-list"></i> Lists <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                          <% @lists.each do |ll| %>
+                          <li><%= link_to list_path(ll.name) do%>
+                            <i class="fa fa-th-large"></i> <%= ll.name %>
+                            <% end %>
+                          </li>
+                          <% end %>
+                          <li class="divider"></li>
+                          <li><%= link_to 'New List', new_list_path %></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div> <!-- container -->
+                  </div> <!-- nabar-inner -->
+                </div> <!-- navbar -->
+              </div> <!-- navbar-outer -->
+              <%= yield %>
+            </div> <!-- container -->
+          </div> <!-- col-md-10 -->
+      <div class="col-md-1"></div>
+    </div> <!-- row -->
+  </body>
 </html>

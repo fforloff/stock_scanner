@@ -8,4 +8,7 @@ Rails.application.routes.draw do
     end 
   end
   resources :exchanges
+  root :to => 'indices#index'
 end
+
+
