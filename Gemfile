@@ -64,4 +64,10 @@ gem "font-awesome-rails"
 gem 'prawn', :git => "https://github.com/prawnpdf/prawn.git"
 gem 'prawn-table'
 gem "prawn_rails"
-#gem "prawn-rails"
+
+gem 'google-api-client'
+#gem 'google_drive'
+#gem 'faraday', :git => "https://github.com/lostisland/faraday.git"
+
+gem 'rspec'
+gem 'rspec-rails'
