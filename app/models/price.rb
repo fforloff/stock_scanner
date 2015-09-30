@@ -7,8 +7,10 @@ class Price
   field :close, type: Integer
   field :volume, type: Integer
 
-  index({date: 1, company_id: 1})
+  index({date: 1, company_id: 1, index_id: 1})
   belongs_to :company
+  belongs_to :index
+
   def self.to_to_csv(options = {})
     CSV.generate(options) do |csv|
       columns = Price.fields.keys

@@ -30,7 +30,8 @@ module Sscanner
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.autoload_paths += %W(#{config.root}/lib/tools)
-#    Mongoid.logger.level = Logger::DEBUG
-#    Moped.logger.level = Logger::DEBUG
+#    Mongoid.logger.level = Logger::FATAL
+#    Moped.logger.level = Logger::WARN
+    Mongo::Logger.logger.level = ::Logger::FATAL
   end
 end

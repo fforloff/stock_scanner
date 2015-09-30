@@ -138,6 +138,23 @@ getOneSymbolRmongodb <- function (host='localhost',database,collection,ticker) {
   return(xts)
 }
 
+getSymbolsCont <-
+  function(tickers, from=seq(Sys.Date(), length=2, by='-2 years')[2], to=Sys.Date(), src="yahoo", env=.GlobalEnv) {
+    n = length(tickers)
+    i = 1
+    while(i <= n ) {
+      print(tickers[i])
+      sym = NULL
+      try ( sym <- getSymbols(tickers[i], from=from, to=to, src=src,
+                              auto.assign=FALSE, ), silent=T)
+
+      if(!is.null(sym)) {
+        assign(tickers[i], sym, envir=env)
+      }
+      i = i+1
+    }
+}
+
 # Hull Moving Average
 HMA <- function(x, n=10){
   hma <- WMA(2*WMA(x, as.integer(n/2)) - WMA(x, n), as.integer(sqrt(n)))

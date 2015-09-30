@@ -42,7 +42,8 @@ group :development, :test do
 end
 
 #gem 'mongoid', '~> 4.0.0'
-gem 'mongoid', git: 'https://github.com/mongoid/mongoid.git'
+#gem 'mongoid', git: 'https://github.com/mongoid/mongoid.git'
+gem 'mongoid', '~> 5.0.0.beta', github: 'mongoid/mongoid'
 gem 'bson_ext'
 gem 'typhoeus'
 gem 'progress_bar'

@@ -4,7 +4,7 @@ class IndicesController < ApplicationController
   # GET /indices
   # GET /indices.json
   def index
-#    @indices = Index.all
+    @indices = Index.all
   end
 
   # GET /indices/1
@@ -69,6 +69,6 @@ class IndicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def index_params
-      params[:index]
+      params.require(:index).permit(:ticker, :name, :exchange, :roar, :_id)
     end
 end

@@ -1,7 +1,7 @@
 require_relative '../lib/tools/gdrive'
 require 'pp'
 
-describe Google_drive do 
+describe Google_drive do
 	before do
 		@gd = Google_drive.new
 	end
@@ -27,25 +27,29 @@ describe Google_drive do
 	# it "get_or_create_parent_id should return root if no folder are given" do
 	# 	expect(@gd.get_or_create_parent_id([''])).to eq('root')
 	# end
-	
+
 	# it "get_or_create_parent_id should non-nil when creating folder" do
 	#  	folder_id = @gd.get_or_create_parent_id(['3test3','bla folder'])
 	#  	expect(folder_id).not_to eq(nil)
-	#  	pp folder_id 
+	#  	pp folder_id
 	# end
 	#  it "insert file should return non-nil when uploading a new file" do
 	# 	file_id = @gd.insert_file('/tmp/testtest.pdf','application/pdf', ['3test3','bla folder','ggg'])
 	#  	expect(file_id).not_to eq(nil)
-	#  	pp file_id 
-	# end	
+	#  	pp file_id
+	# end
 	# it "update file should return non-nil when updating an existing file" do
 	# 	file_id = @gd.update_file('/tmp/testtest.pdf','application/pdf',"0B1sRwjmMgNEVZk9EMmtVX3hOdGM")
 	#   	expect(file_id).to eq("0B1sRwjmMgNEVZk9EMmtVX3hOdGM")
 	#   	pp file_id
 	# end
 	it "copy_to_grive should return a non-nil file_id" do
-		file_id = @gd.copy_to_gdrive('/tmp/testtest.pdf', '/3test3/bla folder/ggg', 'application/pdf')
+		file_id = @gd.copy_to_gdrive('/tmp/testtest.pdf', '/3test3/bla folder/ggg')
 		expect(file_id).not_to eq(nil)
 		pp file_id
+	end
+	it "get_mime_type should return correct mime type" do
+		file = 'bla.pdf'
+		expect(@gd.get_mime_type(file)).to eq('application/pdf')
 	end
 end

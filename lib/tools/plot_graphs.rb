@@ -2,7 +2,7 @@ def plot_graphs(url,images_dir,mma_months,per_batch,chunk)
     require "rinruby"
     require "rgraph"
     require 'progress_bar'
-    require 'benchmark'
+#    require 'benchmark'
 #    company_count = Company.any_of(ticker: /^A/).count
     company_count = Company.count
     env = 'data'
@@ -19,12 +19,12 @@ def plot_graphs(url,images_dir,mma_months,per_batch,chunk)
         roars_hash = myr.draw_charts_par(cc_array,url,"#{images_dir}",chunk)
 
 # preparing for bulk upsert
-        unless roars_hash.nil? then 
+        unless roars_hash.nil? then
           roars_hash.each do |t,roar|
             updates.push({'q' => {'ticker' => t}, 'u' => {'$set' => {'roar' => roar.to_i}}})
           end
         end
-                
+
         for cc in cc_array do
             bar.increment!
         end

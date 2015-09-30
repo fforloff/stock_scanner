@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/mongoid/mongoid.git
+  remote: git://github.com/mongoid/mongoid.git
   revision: 63ece9973709a837a1817824d202b367db3e3688
   specs:
     mongoid (5.0.0.beta)
@@ -68,7 +68,7 @@ GEM
     bootstrap-sass (3.3.5.1)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.3.0)
-    bson (3.2.1)
+    bson (3.2.4)
     bson_ext (1.5.1)
     builder (3.2.2)
     byebug (6.0.2)
@@ -278,7 +278,7 @@ DEPENDENCIES
   google-api-client
   jbuilder (~> 2.0)
   jquery-rails
-  mongoid!
+  mongoid (~> 5.0.0.beta)!
   prawn!
   prawn-table
   prawn_rails
