@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
-  resources :indices
+#  resources :indices do
+#    resources :prices
+#  end
+  resources :entities, :constraints => { :id => /.*/ } do
+    resources :prices
+  end
   resources :lists
   resources :prices
   resources :companies , :constraints => { :id => /.*/ } do

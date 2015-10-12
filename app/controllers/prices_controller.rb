@@ -1,16 +1,10 @@
 class PricesController < ApplicationController
   before_action :set_price, only: [:show, :edit, :update, :destroy]
 
-  # GET /companies/[:company_id]/prices - not active
-  # GET /companies/[:company_id]/prices.json
-  # GET /companies/[:company_id]/prices.csv
-  # GET /companies/[:company_id]/prices.xml
   def index
-    #@prices = Price.where(company_id: params[:company_id])
-    #@prices = Price.all_in(company_id: params[:company_id])
-    @c_ids = params[:company_id]
-    @c_ids = [@c_ids] if @c_ids.is_a?(String)
-    @prices = Price.where(company_id: {'$in': @c_ids})
+    @e_ids = params[:entity_id]
+    @e_ids = [@e_ids] if @e_ids.is_a?(String)
+    @prices = Price.where(entity_id: {'$in': @e_ids}) if @e_ids
     respond_to do |format|  
       #format.json { render json: @prices, 
       #  only: [:company_id, :date, :open, :high, :low, :close, :volume] }

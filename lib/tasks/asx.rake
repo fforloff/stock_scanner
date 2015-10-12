@@ -12,6 +12,11 @@ namespace :exchange do
           $EXCHANGE_NAME = APP_CONFIG[:exchange_name]
           get_companies_list($ASX_LIST_URL,$FILTER_VOLUME,$FILTER_PRICE,$EXCHANGE_NAME)
       end
+      desc "update asx indices list"
+      task :update_indices => :environment do
+          require 'load_indices'
+          load_indices
+      end
 
       desc "update prices"
       task :update_prices => :environment do
@@ -19,8 +24,6 @@ namespace :exchange do
           $MAX_DAYS = APP_CONFIG[:max_days]
           Update_prices.get_prices($MAX_DAYS)
       end
-      desc "update prices and generate images"
-      task :daily => [:update_companies, :update_prices]
       desc "plot graphs"
       task :plot_graphs => :environment do
           $SITE_URL = APP_CONFIG[:site_url]
@@ -29,18 +32,8 @@ namespace :exchange do
           require 'plot_graphs'
           puts "plotting"
           $BATCH_SIZE=100
-          $CHUNK=40
-          #until $BATCH_SIZE > 70 do
-          #  puts "batch size: #{$BATCH_SIZE}"
-          #  time = Benchmark.measure {
-          plot_graphs("#{SITE_URL}/prices?",$IMAGES_DIR,$MMA_MONTHS,$BATCH_SIZE,$CHUNK)
-              #plot_graphs($SITE_URL,$IMAGES_DIR,$MMA_MONTHS,$BATCH_SIZE)
-          #  }
-          #File.open('/tmp/stats', 'a') do |f|
-          #  f.puts "#{$BATCH_SIZE},#{time.real.to_i}"
-          #end
-          #$BATCH_SIZE +=5
-          #end
+          $CHUNK=15
+          plot_graphs("#{$SITE_URL}/prices?",$IMAGES_DIR,$MMA_MONTHS,$BATCH_SIZE,$CHUNK)
       end
       desc "send PDFs to Google Drive"
       task :send_to_gdrive => :environment do
@@ -48,5 +41,7 @@ namespace :exchange do
           require 'send_to_gdrive'
           send_to_gdrive($SITE_URL,'/tmp','/Stock Scanner Reports')
       end
+      desc "update prices and generate images"
+      task :daily => [:update_companies, :update_prices, :plot_graphs]
   end
 end

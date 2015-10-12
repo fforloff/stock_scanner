@@ -4,7 +4,7 @@ def plot_graphs(url,images_dir,mma_months,per_batch,chunk)
     require 'progress_bar'
 #    require 'benchmark'
 #    company_count = Company.any_of(ticker: /^A/).count
-    company_count = Company.count
+    company_count = Entity.count
     env = 'data'
     bar = ProgressBar.new(company_count)
     roars_hash = Hash.new
@@ -12,7 +12,7 @@ def plot_graphs(url,images_dir,mma_months,per_batch,chunk)
     updates = Array.new
     0.step(company_count, per_batch) do |offset|
         cc_array = Array.new
-        Company.asc(:ticker).limit(per_batch).skip(offset).each do |c|
+        Entity.asc(:ticker).limit(per_batch).skip(offset).each do |c|
 #        Company.any_of(ticker: /^A/).limit(per_batch).skip(offset).each do |c|
             cc_array.push("#{c.ticker}")
         end
@@ -31,6 +31,6 @@ def plot_graphs(url,images_dir,mma_months,per_batch,chunk)
     end
     # execute bulk upsert
     session = Mongoid.default_session
-    session.command({update: Company.collection_name.to_s, updates: updates, ordered: false})
+    session.command({update: Entity.collection_name.to_s, updates: updates, ordered: false})
 
 end

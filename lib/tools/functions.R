@@ -15,7 +15,7 @@ splitVector <- function(x, chunk) {
 
 # get price data for a list of tickers over a json call.
 getSymbolsJSON <-
-  function(tickers, url = "http://localhost:3000/companies", env=.GlobalEnv) {
+  function(tickers, url = "http://localhost:3000/entities", env=.GlobalEnv) {
   n = length(tickers)
   i = 1
   while(i <= n) {
@@ -38,9 +38,9 @@ getSymbolsJSON <-
 
 getMultiSymbolsJSON <-
   function(x, url = "http://localhost:3000/prices?", env=.GlobalEnv) {
-  tickers_params <- paste("company_id[]=", x, "&", sep="", collapse="")
+  tickers_params <- paste("entity_id[]=", x, "&", sep="", collapse="")
   dframe <- fromJSON(paste(url, tickers_params, "format=json", sep="" ), flatten = TRUE)
-  for(i in 1:length(dframe)){
+  for(i in 1:nrow(dframe)){
     if(length(dframe$prices[i]) != 0) {
       sym <- do.call("rbind", lapply(dframe$prices[i], data.frame))
       sym$open = sym$open/1000
@@ -55,7 +55,7 @@ getMultiSymbolsJSON <-
 }
 
 getOneSymbolJSON <-
-  function(ticker, url = "http://localhost:3000/companies", env=.GlobalEnv) {
+  function(ticker, url = "http://localhost:3000/entities", env=.GlobalEnv) {
   try (sym <- fromJSON(paste(url,"/",ticker,"/prices.json", sep="")), silent=T)
   if(length(sym) != 0) {
     sym <- sym[c("date","open","high","low","close","volume")]
@@ -70,7 +70,7 @@ getOneSymbolJSON <-
 
 
 getSymbolsCSV <-
-  function(tickers, url = "http://localhost:3000/companies", env=.GlobalEnv) {
+  function(tickers, url = "http://localhost:3000/entities", env=.GlobalEnv) {
   fmt <- "%Y-%m-%d %H:%M:%S UTC"
   n = length(tickers)
   i = 1
@@ -92,7 +92,7 @@ getSymbolsCSV <-
 }
 
 getSymbolsXML <-
-  function(tickers, url = "http://localhost:3000/companies", env=.GlobalEnv) {
+  function(tickers, url = "http://localhost:3000/entities", env=.GlobalEnv) {
   fmt <- "%Y-%m-%d"
   n = length(tickers)
   i = 1
@@ -226,7 +226,7 @@ Range <- function (x, n_hma=8, n_atr_lower=4, n_atr_upper=8, up_steps=2, down_st
   #range <- merge(lower,central,upper)
 }
 
-drawChartsParallel <- function(ticker, url = "http://localhost:3000/companies", path, min_weeks = 26,  env=.GlobalEnv) {
+drawChartsParallel <- function(ticker, url = "http://localhost:3000/entities", path, min_weeks = 26,  env=.GlobalEnv) {
   roar = NA
   try(xts <- getOneSymbolJSON(ticker, url, env), silent=T)
   if(length(xts) != 0) {
