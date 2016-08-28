@@ -143,7 +143,7 @@ getSymbolsCont <-
     n = length(tickers)
     i = 1
     while(i <= n ) {
-      print(tickers[i])
+      #print(tickers[i])
       sym = NULL
       try ( sym <- getSymbols(tickers[i], from=from, to=to, src=src,
                               auto.assign=FALSE, ), silent=T)
@@ -251,7 +251,7 @@ drawChartsParallel <- function(ticker, url = "http://localhost:3000/entities", p
         name = "",
         subset = "last 12 months",
         theme = chartTheme("white", up.col = "green", dn.col = "red"), TA = 'addVo()')
-      print(paste(path,'/',ticker,'_range', sep=''))
+      #print(paste(path,'/',ticker,'_range', sep=''))
       rr <- Range(weekly)
       plot(addTA(rr, on=1, col=c('blue','brown','black')))
       dev.off()
@@ -261,7 +261,7 @@ drawChartsParallel <- function(ticker, url = "http://localhost:3000/entities", p
   return <- data.frame(tickers = ticker, roars = as.vector(last(roar)))
 }
 
-drawChartsParallelMulti <- function(tickers, path, url="http://localhost:3000/prices?", min_weeks = 26,  env=.GlobalEnv) {
+drawChartsParallelMulti <- function(tickers, path, url="http://localhost:3000/prices?",  env=.GlobalEnv) {
   tmpEnv <- new.env()
   tt <- character()
   roars <- numeric()
@@ -273,8 +273,9 @@ drawChartsParallelMulti <- function(tickers, path, url="http://localhost:3000/pr
     roar = NA
     if(NROW(tmpEnv[[t]]) != 0) {
       weekly <- to.weekly(tmpEnv[[t]])
-      if(NROW(weekly) > min_weeks) {
-        roar <- ROAR(Cl(weekly))
+#      if(NROW(weekly) > min_weeks) {
+      roar <- ROAR(Cl(weekly))
+      if(!is.na(last(roar))) {  
         png(filename=paste(path,'/',t,'_mma.png', sep=''), width=400, height=300)
         try(chartSeries(last(weekly, "24 months"),
                         type = c("line"),
@@ -301,8 +302,8 @@ drawChartsParallelMulti <- function(tickers, path, url="http://localhost:3000/pr
     }
   }
   #return <- c(ticker,as.vector(last(roar)))
-  print(tt)
-  print(roars)
+  #print(tt)
+  #print(roars)
   return <- data.frame(tickers = tt, roars = roars)
 }
 

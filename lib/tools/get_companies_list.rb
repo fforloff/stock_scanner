@@ -23,7 +23,8 @@ def filter_stock(filter_volume,filter_price)
     hydra = Typhoeus::Hydra.new(:max_concurrency => 20)
     Company.unscoped.distinct(:ticker).each_slice(200) do |tickers_list_slice|
         joined_list = tickers_list_slice.join('%2C%20')
-        url="http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quoteslist%20where%20symbol%3D'#{joined_list}'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+        url="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quoteslist%20where%20symbol%3D'#{joined_list}'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+        p url 
         request = Typhoeus::Request.new(url, :method => :get)
         request.on_complete do |resp|
             result = JSON.parse(resp.body) 

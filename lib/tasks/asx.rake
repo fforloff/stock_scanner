@@ -42,6 +42,6 @@ namespace :exchange do
           send_to_gdrive($SITE_URL,'/tmp','/Stock Scanner Reports')
       end
       desc "update prices and generate images"
-      task :daily => [:update_companies, :update_prices, :plot_graphs]
+      task :daily => [:update_companies, :update_indices, :update_prices, :plot_graphs, "assets:precompile", :send_to_gdrive]
   end
 end
