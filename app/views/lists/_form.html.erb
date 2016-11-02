@@ -2,9 +2,7 @@
 <%= simple_form_for @list , url: "/lists/#{@list.name}", html: {:role => 'form' } do |f| %>
     <div class="form-group">
   <%= f.input :name, :input_html => { :class => "form-control" } %>
-    </div>
-    <div class="form-group">
-<%= f.label "tickers", :input_html => { :class => "form-control" } %><br><%= f.hidden_field :company_ids, id: "companies-ajax", style: "width:650px" %>
+  <select class="companies-ajax" multiple="multiple" style="width: 50px !important; min-width: 50px; max-width: 50px;"></select>
     </div>
 <p>
 <%= f.button :submit %>

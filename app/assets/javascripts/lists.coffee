@@ -4,6 +4,7 @@
 
 $(document).ready ->
   $('#companies-ajax').select2
+    width: '300px'
     tags: [ '' ]
     minimumInputLength: 2
     tokenizer: (input, selection, callback) ->
@@ -19,12 +20,17 @@ $(document).ready ->
           text: part
         i++
       return
+    placeholder: "Select..."
     ajax:
       url: '/companies/autocomplete.json'
       dataType: 'json'
-      data: (term, page) ->
-        { query: term }
-      results: (data, page) ->
+      delay: 250
+      data: (params) ->
+        {
+          q: params.term
+          page: params.page
+        }
+      processResults: (data, page) ->
         { results: $.map(data, (company, i) ->
           {
             id: company._id

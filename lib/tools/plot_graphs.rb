@@ -12,7 +12,8 @@ def plot_graphs(url,images_dir,mma_months,per_batch,chunk)
     updates = Array.new
     0.step(company_count, per_batch) do |offset|
         cc_array = Array.new
-        Entity.asc(:ticker).limit(per_batch).skip(offset).each do |c|
+##        Entity.asc(:ticker).limit(per_batch).skip(offset).each do |c|
+        Entity.any_of(ticker: /^C/).limit(per_batch).skip(offset).each do |c|
 #        Company.any_of(ticker: /^A/).limit(per_batch).skip(offset).each do |c|
             cc_array.push("#{c.ticker}")
         end

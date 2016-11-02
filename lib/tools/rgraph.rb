@@ -1,9 +1,9 @@
 class Rgraphs
     def initialize
-#        @myr = RinRuby.new
-#        @myr.echo
-        @myr = RinRuby.new(echo = false)
-        @myr.echo(enable=false, stderr=false)
+        @myr = RinRuby.new
+        @myr.echo
+#        @myr = RinRuby.new(echo = false)
+#        @myr.echo(enable=false, stderr=false)
         #@myr.eval "library('quantmod')"
         @myr.eval "suppressPackageStartupMessages(library('quantmod', quietly=TRUE, verbose=FALSE))"
         @myr.eval "source('#{File.expand_path('lib/tools/functions.R')}')"
