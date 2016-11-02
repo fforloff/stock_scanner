@@ -52,7 +52,7 @@ gem 'rinruby'
 gem 'thin'
 #gem 'celluloid-pmap'
 
-gem "select2-rails"
+gem "select2-rails", '~> 3.5.7'
 gem 'simple_form'
 gem 'gon'
 
@@ -72,3 +72,7 @@ gem 'google-api-client'
 
 gem 'rspec'
 gem 'rspec-rails'
+
+gem 'passenger'
+
+gem 'whenever', :require => false

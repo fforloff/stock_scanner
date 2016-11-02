@@ -1,4 +1,5 @@
 class Rgraphs
+#the following packages are required: "quantmod", "jsonlite", "curl", "rmongodb", "doParallel", "foreach"
     def initialize
         @myr = RinRuby.new
         @myr.echo
@@ -80,9 +81,11 @@ EOF
       @c_vector = companies.map {|c| "'#{c}'"}.join(',')
       @myr.eval <<EOF
       chunked <- splitVector(c(#{@c_vector}), chunk=#{chunk})
+      #print(chunked)
       res <- foreach (cc=chunked, .combine=rbind, .packages=c('quantmod','jsonlite','curl','xts','zoo'), .errorhandling='remove') %dopar% {
         drawChartsParallelMulti(cc,  path='#{path}', url = '#{url}')
         }
+      #print(res)
       res <- na.omit(res) 
       tickers <- as.vector(res[,1])
       roars <- as.vector(res[,2])
